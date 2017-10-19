@@ -15,24 +15,33 @@
 void printToken( TokenType token, const char* tokenString )
 { switch (token)
   { 	case ELSE:
-	    case IF:
-	    case INT:
-	    case RETURN:
-	    case VOID:
-	    case WHILE:
+	case IF:
+	case INT:
+	case RETURN:
+	case VOID:
+   	case WHILE:
       fprintf(listing,
          "reserved word: %s\n",tokenString);
       break;
-    case ASSIGN: fprintf(listing,":=\n"); break;
-    case LT: fprintf(listing,"<\n"); break;
-    case EQ: fprintf(listing,"=\n"); break;
-    case LPAREN: fprintf(listing,"(\n"); break;
-    case RPAREN: fprintf(listing,")\n"); break;
-    case SEMI: fprintf(listing,";\n"); break;
     case PLUS: fprintf(listing,"+\n"); break;
     case MINUS: fprintf(listing,"-\n"); break;
-    case TIMES: fprintf(listing,"*\n"); break;
-    case OVER: fprintf(listing,"/\n"); break;
+    case MULT: fprintf(listing,"*\n"); break;
+    case DIVIDE: fprintf(listing,"/\n"); break;
+    case SMALLER: fprintf(listing,"<\n"); break;
+    case ESMALLER: fprintf(listing,"<=\n"); break;
+    case LARGER: fprintf(listing,">\n"); break;
+    case ELARGER: fprintf(listing,">=\n"); break;
+    case EQUAL: fprintf(listing,"==\n"); break;
+    case NOTEQUAL: fprintf(listing,"!=\n"); break;
+    case ASSIGN: fprintf(listing,"=\n"); break;
+    case SEMI: fprintf(listing,";\n"); break;
+    case COMMA: fprintf(listing,",\n"); break;
+    case LPARENT: fprintf(listing,"(\n"); break;
+    case RPARENT: fprintf(listing,")\n"); break;
+    case LBPARENT: fprintf(listing,"[\n"); break;
+    case RBPARENT: fprintf(listing,"]\n"); break;
+    case LBRACKET: fprintf(listing,"{\n"); break;
+    case RBRACKET: fprintf(listing,"}\n"); break;
     case ENDFILE: fprintf(listing,"EOF\n"); break;
     case NUM:
       fprintf(listing,
@@ -84,6 +93,21 @@ TreeNode * newExpNode(ExpKind kind)
     t->kind.exp = kind;
     t->lineno = lineno;
     t->type = Void;
+  }
+  return t;
+}
+
+TreeNode * newDeclNode(DeclKind kind)
+{ TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
+  int i;
+  if (t==NULL)
+    fprintf(listing,"Out of memory error at line %d\n",lineno);
+  else {
+    for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
+    t->sibling = NULL;
+    t->nodekind = DeclK;
+    t->kind.decl = kind;
+    t->lineno = lineno;
   }
   return t;
 }
