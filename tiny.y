@@ -29,15 +29,14 @@ int yyerror(char * message); /* prototype to make gcc happy */
 %token ID NUM 
 
 /*Special Symbols as defined by Appendix A*/
-%token PLUS MINUS TIMES OVER LT LTEQ GT GTEQ EQ NEQ ASSIGN SEMI COMMA 
-%token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE LCURL RCURL LNOTE RNOTE
+%token PLUS MINUS DIVIDE MULT SMALLER ESMALLER LARGER ELARGER EQUAL NOTEQUAL ASSIGN SEMI COMMA 
+%token LPARENT RPARENT LBRACKET RBRACKET LBPARENT RBPARENT LCURL RCURL LNOTE RNOTE
      
 %token ERROR 
 
 %% /* Grammar for TINY */
-
 program     : decl_list
-                 { savedTree = $1;} 
+                 { savedTree = $1;}
             ;
 decl_list   : decl_list decl
                  { YYSTYPE t = $1;
@@ -53,8 +52,250 @@ decl_list   : decl_list decl
 decl        : var_decl  { $$ = $1; }
             | fun_decl  { $$ = $1; }
             ;
-
-stmt_seq    : stmt_seq SEMI stmt
+saveName    : ID
+                 { savedName = copyString(tokenString);
+                   savedLineNo = lineno;
+                 }
+            ;
+saveNumber  : NUM
+                 { savedNumber = atoi(tokenString);
+                   savedLineNo = lineno;
+                 }
+            ;
+var_decl    : type_spec saveName SEMI
+                 { $$ = newDeclNode(VarK);
+                   $$->child[0] = $1; /* type */
+                   $$->lineno = lineno;
+                   $$->attr.name = savedName;
+                 }
+            | type_spec saveName LBRACKET saveNumber RBRACKET SEMI
+                 { $$ = newDeclNode(ArrVarK);
+                   $$->child[0] = $1; /* type */
+                   $$->lineno = lineno;
+                   $$->attr.arr.name = savedName;
+                   $$->attr.arr.size = savedNumber;
+                 }
+            ;
+type_spec   : INT
+                 { $$ = newTypeNode(TypeNameK);
+                   $$->attr.type = INT;
+                 }
+            | VOID
+                 { $$ = newTypeNode(TypeNameK);
+                   $$->attr.type = VOID;
+                 }
+            ;
+fun_decl    : type_spec saveName {
+                   $$ = newDeclNode(FuncK);
+                   $$->lineno = lineno;
+                   $$->attr.name = savedName;
+                 }
+              LPARENT params RPARENT comp_stmt
+                 {
+                   $$ = $3;
+                   $$->child[0] = $1; /* type */
+                   $$->child[1] = $5;    /* parameters */
+                   $$->child[2] = $7; /* body */
+                 }
+            ;
+params      : param_list  { $$ = $1; }
+            | VOID
+                 { $$ = newTypeNode(TypeNameK);
+                   $$->attr.type = VOID;
+                 }
+param_list  : param_list COMMA param
+                 { YYSTYPE t = $1;
+                   if (t != NULL)
+                   { while (t->sibling != NULL)
+                        t = t->sibling;
+                     t->sibling = $3;
+                     $$ = $1; }
+                     else $$ = $3; 
+                 }
+            | param { $$ = $1; };
+param       : type_spec saveName
+                 { $$ = newParamNode(NonArrParamK);
+                   $$->child[0] = $1;
+                   $$->attr.name = savedName;
+                 }
+            | type_spec saveName
+              LBPARENT RBPARENT
+                 { $$ = newParamNode(ArrParamK);
+                   $$->child[0] = $1;
+                   $$->attr.name = savedName;
+                 }
+            ;
+comp_stmt   : LBPARENT local_decls stmt_list RBRACKET
+                 { $$ = newStmtNode(CompK);
+                   $$->child[0] = $2; /* local variable declarations */
+                   $$->child[1] = $3; /* statements */
+                 }
+            ;
+local_decls : local_decls var_decl
+                 { YYSTYPE t = $1;
+                   if (t != NULL)
+                   { while (t->sibling != NULL)
+                        t = t->sibling;
+                     t->sibling = $2;
+                     $$ = $1; }
+                     else $$ = $2;
+                 }
+            | /* empty */ { $$ = NULL; }
+            ;
+stmt_list   : stmt_list stmt
+                 { YYSTYPE t = $1;
+                   if (t != NULL)
+                   { while (t->sibling != NULL)
+                        t = t->sibling;
+                     t->sibling = $2;
+                     $$ = $1; }
+                     else $$ = $2;
+                 }
+            | /* empty */ { $$ = NULL; }
+            ;
+stmt        : exp_stmt { $$ = $1; }
+            | comp_stmt { $$ = $1; }
+            | sel_stmt { $$ = $1; }
+            | iter_stmt { $$ = $1; }
+            | ret_stmt { $$ = $1; }
+            ;
+exp_stmt    : exp SEMI { $$ = $1; }
+            | SEMI { $$ = NULL; }
+            ;
+sel_stmt    : IF LPARENT exp RPARENT stmt
+                 { $$ = newStmtNode(IfK);
+                   $$->child[0] = $3;
+                   $$->child[1] = $5;
+                   $$->child[2] = NULL;
+                 }
+            | IF LPARENT exp RPARENT stmt ELSE stmt
+                 { $$ = newStmtNode(IfK);
+                   $$->child[0] = $3;
+                   $$->child[1] = $5;
+                   $$->child[2] = $7;
+                 }
+            ;
+iter_stmt   : WHILE LPARENT exp RPARENT stmt
+                 { $$ = newStmtNode(IterK);
+                   $$->child[0] = $3;
+                   $$->child[1] = $5;
+                 }
+            ;
+ret_stmt    : RETURN SEMI
+                 { $$ = newStmtNode(RetK);
+                   $$->child[0] = NULL;
+                 }
+            | RETURN exp SEMI
+                 { $$ = newStmtNode(RetK);
+                   $$->child[0] = $2;
+                 }
+            ;
+exp         : var ASSIGN exp
+                 { $$ = newExpNode(AssignK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                 }
+            | simple_exp { $$ = $1; }
+            ;
+var         : saveName
+                 { $$ = newExpNode(IdK);
+                   $$->attr.name = savedName;
+                 }
+            | saveName
+                 { $$ = newExpNode(ArrIdK);
+                   $$->attr.name = savedName;
+                 }
+              LBRACKET exp RBRACKET
+                 { $$->child[0] = $3;
+                 }
+            ;
+simple_exp  : add_exp ESMALLER add_exp
+                 { $$ = newExpNode(OpK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                   $$->attr.op = ESMALLER;
+                 }
+            | add_exp SMALLER add_exp
+                 { $$ = newExpNode(OpK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                   $$->attr.op = SMALLER;
+                 }
+            | add_exp LARGER add_exp
+                 { $$ = newExpNode(OpK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                   $$->attr.op = LARGER;
+                 }
+            | add_exp ELARGER add_exp
+                 { $$ = newExpNode(OpK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                   $$->attr.op = ELARGER;
+                 }
+            | add_exp EQUAL add_exp
+                 { $$ = newExpNode(OpK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                   $$->attr.op = EQUAL;
+                 }
+            | add_exp NOTEQUAL add_exp
+                 { $$ = newExpNode(OpK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                   $$->attr.op = NOTEQUAL;
+                 }
+            | add_exp { $$ = $1; }
+            ;
+add_exp     : add_exp PLUS term
+                 { $$ = newExpNode(OpK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                   $$->attr.op = PLUS;
+                 }
+            | add_exp MINUS term
+                 { $$ = newExpNode(OpK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                   $$->attr.op = MINUS;
+                 }
+            | term { $$ = $1; }
+            ;
+term        : term MULT factor
+                 { $$ = newExpNode(OpK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                   $$->attr.op = MULT;
+                 }
+            | term DIVIDE factor
+                 { $$ = newExpNode(OpK);
+                   $$->child[0] = $1;
+                   $$->child[1] = $3;
+                   $$->attr.op = DIVIDE;
+                 }
+            | factor { $$ = $1; }
+            ;
+factor      : LPARENT exp RPARENT { $$ = $2; }
+            | var { $$ = $1; }
+            | call { $$ = $1; }
+            | NUM
+                 { $$ = newExpNode(ConstK);
+                   $$->attr.val = atoi(tokenString);
+                 }
+            ;
+call        : saveName {
+                 $$ = newExpNode(CallK);
+                 $$->attr.name = savedName;
+              }
+              LPARENT args RPARENT
+                 { $$ = $2;
+                   $$->child[0] = $4;
+                 }
+            ;
+args        : arg_list { $$ = $1; }
+            | /* empty */ { $$ = NULL; }
+            ;
+arg_list    : arg_list COMMA exp
                  { YYSTYPE t = $1;
                    if (t != NULL)
                    { while (t->sibling != NULL)
@@ -63,110 +304,10 @@ stmt_seq    : stmt_seq SEMI stmt
                      $$ = $1; }
                      else $$ = $3;
                  }
-            | stmt  { $$ = $1; }
-            ;
-stmt        : if_stmt { $$ = $1; }
-            | repeat_stmt { $$ = $1; }
-            | assign_stmt { $$ = $1; }
-            | read_stmt { $$ = $1; }
-            | write_stmt { $$ = $1; }
-            | error  { $$ = NULL; }
-            ;
-if_stmt     : IF exp THEN stmt_seq END
-                 { $$ = newStmtNode(IfK);
-                   $$->child[0] = $2;
-                   $$->child[1] = $4;
-                 }
-            | IF exp THEN stmt_seq ELSE stmt_seq END
-                 { $$ = newStmtNode(IfK);
-                   $$->child[0] = $2;
-                   $$->child[1] = $4;
-                   $$->child[2] = $6;
-                 }
-            ;
-repeat_stmt : REPEAT stmt_seq UNTIL exp
-                 { $$ = newStmtNode(RepeatK);
-                   $$->child[0] = $2;
-                   $$->child[1] = $4;
-                 }
-            ;
-assign_stmt : ID { savedName = copyString(tokenString);
-                   savedLineNo = lineno; }
-              ASSIGN exp
-                 { $$ = newStmtNode(AssignK);
-                   $$->child[0] = $4;
-                   $$->attr.name = savedName;
-                   $$->lineno = savedLineNo;
-                 }
-            ;
-read_stmt   : READ ID
-                 { $$ = newStmtNode(ReadK);
-                   $$->attr.name =
-                     copyString(tokenString);
-                 }
-            ;
-write_stmt  : WRITE exp
-                 { $$ = newStmtNode(WriteK);
-                   $$->child[0] = $2;
-                 }
-            ;
-exp         : simple_exp LT simple_exp 
-                 { $$ = newExpNode(OpK);
-                   $$->child[0] = $1;
-                   $$->child[1] = $3;
-                   $$->attr.op = LT;
-                 }
-            | simple_exp EQ simple_exp
-                 { $$ = newExpNode(OpK);
-                   $$->child[0] = $1;
-                   $$->child[1] = $3;
-                   $$->attr.op = EQ;
-                 }
-            | simple_exp { $$ = $1; }
-            ;
-simple_exp  : simple_exp PLUS term 
-                 { $$ = newExpNode(OpK);
-                   $$->child[0] = $1;
-                   $$->child[1] = $3;
-                   $$->attr.op = PLUS;
-                 }
-            | simple_exp MINUS term
-                 { $$ = newExpNode(OpK);
-                   $$->child[0] = $1;
-                   $$->child[1] = $3;
-                   $$->attr.op = MINUS;
-                 } 
-            | term { $$ = $1; }
-            ;
-term        : term TIMES factor 
-                 { $$ = newExpNode(OpK);
-                   $$->child[0] = $1;
-                   $$->child[1] = $3;
-                   $$->attr.op = TIMES;
-                 }
-            | term OVER factor
-                 { $$ = newExpNode(OpK);
-                   $$->child[0] = $1;
-                   $$->child[1] = $3;
-                   $$->attr.op = OVER;
-                 }
-            | factor { $$ = $1; }
-            ;
-factor      : LPAREN exp RPAREN
-                 { $$ = $2; }
-            | NUM
-                 { $$ = newExpNode(ConstK);
-                   $$->attr.val = atoi(tokenString);
-                 }
-            | ID { $$ = newExpNode(IdK);
-                   $$->attr.name =
-                         copyString(tokenString);
-                 }
-            | error { $$ = NULL; }
+            | exp { $$ = $1; }
             ;
 
 %%
-
 int yyerror(char * message)
 { fprintf(listing,"Syntax error at line %d: %s\n",lineno,message);
   fprintf(listing,"Current token: ");
