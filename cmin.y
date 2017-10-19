@@ -22,9 +22,13 @@ int yyerror(char * message); /* prototype to make gcc happy */
 
 %}
 
-%token IF THEN ELSE END REPEAT UNTIL READ WRITE
+/*Reserved words*/
+%token IF ELSE INT RETURN VOID WHILE
+/*Multichar Tokens*/
 %token ID NUM 
-%token ASSIGN EQ LT PLUS MINUS TIMES OVER LPAREN RPAREN SEMI
+/*Special Symbols as defined by Appendix A*/
+%token PLUS MINUS TIMES OVER LT LTEQ GT GTEQ EQ NEQ ASSIGN SEMI COMMA 
+     /* TINY: ASSIGN EQ LT PLUS MINUS TIMES OVER LPAREN RPAREN SEMI*/
 %token ERROR 
 
 %% /* Grammar for TINY */
