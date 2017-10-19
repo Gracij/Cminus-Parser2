@@ -24,18 +24,36 @@ int yyerror(char * message); /* prototype to make gcc happy */
 
 /*Reserved words*/
 %token IF ELSE INT RETURN VOID WHILE
+
 /*Multichar Tokens*/
 %token ID NUM 
+
 /*Special Symbols as defined by Appendix A*/
 %token PLUS MINUS TIMES OVER LT LTEQ GT GTEQ EQ NEQ ASSIGN SEMI COMMA 
-     /* TINY: ASSIGN EQ LT PLUS MINUS TIMES OVER LPAREN RPAREN SEMI*/
+%token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE LCURL RCURL LNOTE RNOTE
+     
 %token ERROR 
 
 %% /* Grammar for TINY */
 
-program     : stmt_seq
+program     : decl_list
                  { savedTree = $1;} 
             ;
+decl_list   : decl_list decl
+                 { YYSTYPE t = $1;
+                   if (t != NULL)
+                   { while (t->sibling != NULL)
+                        t = t->sibling;
+                     t->sibling = $2;
+                     $$ = $1; }
+                     else $$ = $2;
+                 }
+            | decl  { $$ = $1; }
+            ;
+decl        : var_decl  { $$ = $1; }
+            | fun_decl  { $$ = $1; }
+            ;
+
 stmt_seq    : stmt_seq SEMI stmt
                  { YYSTYPE t = $1;
                    if (t != NULL)
