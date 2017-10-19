@@ -24,6 +24,8 @@ whitespace  [ \t]+
 
 "if"            {return IF;}
 "then"          {return THEN;}
+"int"           {return INT;}
+"return"        {return RETURN;}
 "else"          {return ELSE;}
 "end"           {return END;}
 "repeat"        {return REPEAT;}
@@ -31,14 +33,21 @@ whitespace  [ \t]+
 "read"          {return READ;}
 "write"         {return WRITE;}
 ":="            {return ASSIGN;}
-"="             {return EQ;}
-"<"             {return LT;}
+"="             {return EQUAL;}
+"<"             {return SMALLER;}
+">"             {return ELARGER;}
+"<="            {return ESMALLER;}
+">="            {return LARGER;}
 "+"             {return PLUS;}
 "-"             {return MINUS;}
-"*"             {return TIMES;}
-"/"             {return OVER;}
-"("             {return LPAREN;}
-")"             {return RPAREN;}
+"*"             {return MULT;}
+"/"             {return DIVIDE;}
+"("             {return LPARENT;}
+")"             {return RPARENT;}
+"{"             {return LBPARENT}
+"}"             {return RBPARENT}
+"["             {return LBRACKET;}  
+"]"             {return RBRACKET;}
 ";"             {return SEMI;}
 {number}        {return NUM;}
 {identifier}    {return ID;}
