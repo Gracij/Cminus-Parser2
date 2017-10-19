@@ -86,7 +86,6 @@ typedef struct treeNode
      NodeKind nodekind;
      union { StmtKind stmt; ExpKind exp; DeclKind decl;} kind;
      union { TokenType op;
-             void whatever;
              int val;
              char * name; } attr;
      ExpType type; /* for type checking of exps */
