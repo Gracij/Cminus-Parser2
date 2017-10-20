@@ -78,11 +78,11 @@ var_decl    : type_spec saveName SEMI
                  }
             ;
 type_spec   : INT
-                 { $$ = newTypeNode(TypeNameK);
+                 { $$ = newTypeNode(Integer);
                    $$->attr.type = INT;
                  }
             | VOID
-                 { $$ = newTypeNode(TypeNameK);
+                 { $$ = newTypeNode(Void);
                    $$->attr.type = VOID;
                  }
             ;
@@ -101,7 +101,7 @@ fun_decl    : type_spec saveName {
             ;
 params      : param_list  { $$ = $1; }
             | VOID
-                 { $$ = newTypeNode(TypeNameK);
+                 { $$ = newTypeNode(Array);
                    $$->attr.type = VOID;
                  }
 param_list  : param_list COMMA param
