@@ -67,7 +67,7 @@ extern int lineno; /* source line number for listing */
 //typedef enum {OpK,ConstK,IdK} ExpKind;
 
 /* ExpType is used for type checking */
-typedef enum {Boolean} ExpType;
+// typedef enum {Boolean} ExpType; <- is this equivalent to TypeSpec for C- data types? check Tiny usage
 
 /*Cminus Typedef*/
 typedef enum {StmtK,DeclK,ExpK} NodeKind;
