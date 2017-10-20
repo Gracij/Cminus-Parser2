@@ -22,6 +22,7 @@ whitespace  [ \t]+
 
 %%
 
+"[]"		{return ARRAY;}
 "if"            {return IF;}
 "int"           {return INT;}
 "return"        {return RETURN;}

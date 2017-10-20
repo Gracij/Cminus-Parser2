@@ -34,9 +34,7 @@ TreeNode * newDeclNode(DeclKind);
 *
 */
 
-TreeNode * newTypeNode(TypeSpec);
 
-TreeNode * newParamNode(ParamKind);
 
 char * copyString( char * );
 

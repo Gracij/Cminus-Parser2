@@ -45,7 +45,7 @@
 #endif
 
 /* MAXRESERVED = the number of reserved words */
-#define MAXRESERVED 6 /* changed to 6 */
+#define MAXRESERVED  /* changed to 6 */
 
 /* Yacc/Bison generates its own integer values
  * for tokens
@@ -76,8 +76,7 @@ typedef enum {Void,Integer,Array} TypeSpec;
 typedef enum {VarK,FunK,ParamK} DeclKind;
 typedef enum {CompK,SelK,IterK,RetK} StmtKind;
 typedef enum {OpK,ConstK,IdK,CallK} ExpKind;
-typedef enum {TypeNamek} TypeKind;
-typedef enum {ArrParamK, NonArrParamk} ParamKind;
+
 
 
 #define MAXCHILDREN 3
@@ -99,13 +98,6 @@ typedef struct treeNode
 */
 
 
-/* ArrayAttr is used for attributes for array variables */
-typedef struct arrayAttr {
-    TokenType type;
-    char * name;
-    int size;
-} ArrayAttr;
-
 
 typedef struct treeNode
    { struct treeNode * child[MAXCHILDREN];
@@ -114,14 +106,11 @@ typedef struct treeNode
      NodeKind nodekind;
      union { StmtKind stmt;
              ExpKind exp;
-             DeclKind decl;
-             ParamKind param;
-             TypeKind type; } kind;
+             DeclKind decl; } kind;
      union { TokenType op;
              TokenType type;
 	     int val;
-             char * name;
-	     ArrayAttr arr;} attr;
+             char * name;} attr;
      ExpType type; /* for type checking of exps */
 } TreeNode;
 

@@ -72,8 +72,7 @@ var_decl    : type_spec saveName SEMI
                  { $$ = newDeclNode(VarK);
                    $$->child[0] = $1; /* type */
                    $$->lineno = lineno;
-                   $$->attr.arr.name = savedName;
-                   $$->attr.arr.size = savedNumber;
+                   $$->attr.name = savedName;
                  }
             ;
 type_spec   : INT
@@ -84,6 +83,11 @@ type_spec   : INT
                  { $$ = newTypeNode(Void);
                    $$->attr.type = VOID;
                  }
+	    | ARRAY 
+		{
+		  $$ = newTypeNode(ARRAY);
+		  $$ -> attr.type = ARRAY;
+		}
             ;
 fun_decl    : type_spec saveName {
                    $$ = newDeclNode(FunK);

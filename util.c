@@ -20,6 +20,7 @@ void printToken( TokenType token, const char* tokenString )
 	case RETURN:
 	case VOID:
    	case WHILE:
+	case ARRAY:
       fprintf(listing,
          "reserved word: %s\n",tokenString);
       break;
@@ -121,8 +122,8 @@ TreeNode * newTypeNode(TypeSpec kind)
   else {
     for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
     t->sibling = NULL;
-    t->nodekind = TypeNamek;
-    t->kind.type = kind;
+    t->nodekind = ExpK;
+    t->kind.exp = kind;
     t->lineno = lineno;
   }
   return t;
