@@ -51,6 +51,7 @@ decl_list   : decl_list decl
             ;
 decl        : var_decl  { $$ = $1; }
             | fun_decl  { $$ = $1; }
+	    | // need to handle param_decl, possibly same as above
             ;
 saveName    : ID
                  { savedName = copyString(tokenString);
@@ -68,7 +69,7 @@ var_decl    : type_spec saveName SEMI
                    $$->lineno = lineno;
                    $$->attr.name = savedName;
                  }
-            | type_spec saveName LBRACKET saveNumber RBRACKET SEMI
+            | type_spec saveName LBRACKET saveNumber RBRACKET SEMI // does this refer to array?
                  { $$ = newDeclNode(VarK);
                    $$->child[0] = $1; /* type */
                    $$->lineno = lineno;
@@ -83,11 +84,7 @@ type_spec   : INT
                  { $$ = newTypeNode(Void);
                    $$->attr.type = VOID;
                  }
-	    | ARRAY 
-		{
-		  $$ = newTypeNode(ARRAY);
-		  $$ -> attr.type = ARRAY;
-		}
+	    // | INT LBRACKET params RBRACKET (maybe)
             ;
 fun_decl    : type_spec saveName {
                    $$ = newDeclNode(FunK);
