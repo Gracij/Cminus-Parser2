@@ -45,12 +45,12 @@
 #endif
 
 /* MAXRESERVED = the number of reserved words */
-#define MAXRESERVED  /* changed to 6 */
+#define MAXRESERVED 6 /* changed to 6 */
 
 /* Yacc/Bison generates its own integer values
  * for tokens
  */
-typedef int TokenType; 
+typedef int TokenType;
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
@@ -61,7 +61,7 @@ extern int lineno; /* source line number for listing */
 /**************************************************/
 /***********   Syntax tree for parsing ************/
 /**************************************************/
- /*TINY language typedef*/
+/*TINY language typedef*/
 //typedef enum {StmtK,ExpK} NodeKind;
 //typedef enum {IfK,RepeatK,AssignK,ReadK,WriteK} StmtKind;
 //typedef enum {OpK,ConstK,IdK} ExpKind;
@@ -69,18 +69,15 @@ extern int lineno; /* source line number for listing */
 /* ExpType is used for type checking */
 typedef enum {Boolean} ExpType;
 
-
 /*Cminus Typedef*/
 typedef enum {StmtK,DeclK,ExpK} NodeKind;
 typedef enum {Void,Integer,Array} TypeSpec;
+
 typedef enum {VarK,FunK,ParamK} DeclKind;
 typedef enum {CompK,SelK,IterK,RetK} StmtKind;
 typedef enum {OpK,ConstK,IdK,CallK} ExpKind;
 
-
-
 #define MAXCHILDREN 3
-
 
 /*
 typedef struct treeNode
@@ -97,8 +94,6 @@ typedef struct treeNode
 
 */
 
-
-
 typedef struct treeNode
    { struct treeNode * child[MAXCHILDREN];
      struct treeNode * sibling;
@@ -110,7 +105,8 @@ typedef struct treeNode
      union { TokenType op;
              TokenType type;
 	     int val;
-             char * name;} attr;
+             char * name;
+	     TypeSpec spec; /* make this an attribute of the node and let grammar handle arrays */ } attr;
      ExpType type; /* for type checking of exps */
 } TreeNode;
 
