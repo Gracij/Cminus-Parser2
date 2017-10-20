@@ -30,8 +30,7 @@ int yyerror(char * message); /* prototype to make gcc happy */
 %token ID NUM 
 
 /*Special Symbols as defined by Appendix A*/
-%token PLUS MINUS DIVIDE MULT SMALLER ESMALLER LARGER ELARGER EQUAL NOTEQUAL ASSIGN SEMI COMMA 
-%token LPARENT RPARENT LBRACKET RBRACKET LBPARENT RBPARENT LCURL RCURL LNOTE RNOTE
+%token PLUS MINUS DIVIDE MULT SMALLER ESMALLER LARGER ELARGER EQUAL NOTEQUAL ASSIGN SEMI COMMA LPARENT RPARENT LBRACKET RBRACKET LBPARENT RBPARENT LCURL RCURL LNOTE RNOTE
      
 %token ERROR 
 
@@ -121,6 +120,7 @@ param       : type_spec saveName
                    $$->attr.name = savedName;
                  }
             ;
+
 comp_stmt   : LBPARENT local_decls stmt_list RBRACKET
                  { $$ = newStmtNode(CompK);
                    $$->child[0] = $2; /* local variable declarations */

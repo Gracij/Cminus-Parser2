@@ -78,6 +78,8 @@ typedef enum {CompK,SelK,IterK,RetK} StmtKind;
 typedef enum {OpK,ConstK,IdK,CallK} ExpKind;
 typedef enum {TypeNamek} TypeKind;
 typedef enum {ArrParamK, NonArrParamk} ParamKind;
+
+
 #define MAXCHILDREN 3
 
 
@@ -117,10 +119,9 @@ typedef struct treeNode
              TypeKind type; } kind;
      union { TokenType op;
              TokenType type;
-             int val;
+	     int val;
              char * name;
-	     ArrayAttr arr;
-             struct ScopeRec * scope; } attr;
+	     ArrayAttr arr;} attr;
      ExpType type; /* for type checking of exps */
 } TreeNode;
 
