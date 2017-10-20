@@ -106,7 +106,7 @@ typedef struct treeNode
              TokenType type;
 	     int val;
              char * name;
-	     TypeSpec spec; /* make this an attribute of the node and let grammar handle arrays */ } attr;
+	     /* TypeSpec spec; /* make this an attribute of the node and let grammar handle arrays */ } attr;
      ExpType type; /* for type checking of exps */
 } TreeNode;
 
