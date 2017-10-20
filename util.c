@@ -112,7 +112,7 @@ TreeNode * newDeclNode(DeclKind kind)
   return t;
 }
 
-
+/* <- this is not actually a "node kind" and so does not need a constructor
 TreeNode * newTypeNode(TypeSpec kind)
 { TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
   int i;
@@ -127,7 +127,7 @@ TreeNode * newTypeNode(TypeSpec kind)
   }
   return t;
 }
-
+ */
 
 
 /* Function copyString allocates and makes a new
@@ -175,14 +175,14 @@ void printTree( TreeNode * tree )
           fprintf(listing,"Compound\n");
           break;
 	case SelK:
-	  fprintf(listing,"Select\n");
+	  fprintf(listing,"Subsequence\n");
 	  break;
         case IterK:
-          fprintf(listing,"Iterate\n");
+          fprintf(listing,"While\n");
           break;
-	//case Retk:
-	 // fprintf(listing,"Return\n");
-	  //break;
+	case Retk:
+	  fprintf(listing,"Return\n");
+	  break;
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
           break;
@@ -191,26 +191,34 @@ void printTree( TreeNode * tree )
     else if (tree->nodekind==ExpK)
     { switch (tree->kind.exp) {
         case OpK:
-          fprintf(listing,"Op: ");
+          fprintf(listing,"Operator: ");
           printToken(tree->attr.op,"\0");
           break;
         case ConstK:
-          fprintf(listing,"Const: %d\n",tree->attr.val);
+          fprintf(listing,"NUM: %d\n",tree->attr.val);
           break;
         case IdK:
-          fprintf(listing,"Id: %s\n",tree->attr.name);
+          fprintf(listing,"ID: %s\n",tree->attr.name);
           break;
-	//case Callk:
-	 // fprintf(listing,"Call(args): %s\n",tree->attr.name);
-          //break;
+	case Callk:
+	  fprintf(listing,"Call: %s\n",tree->attr.name);
+          break;
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
           break;
       }
     }
-    else if (tree->nodekind==DeclK)
+    else if (tree->nodekind==DeclK) // if you look at the project spec all of these need to print out the TypeSpec after the name, should this be another attr in the node construction?
     { switch (tree->kind.decl) {
-	//
+	case VarK:
+	  fprintf(listing,"Variable Decl: %s\n",tree->attr.name);
+      	  break;
+	case FunK:
+	  fprintf(listing,"Function Decl: %s\n",tree->attr.name);
+     	  break;
+	case ParamK:
+	  fprintf(listing,"Param: %s\n",tree->attr.name);
+          break;
       }
     }
     else fprintf(listing,"Unknown node kind\n");
