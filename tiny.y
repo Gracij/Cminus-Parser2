@@ -15,6 +15,7 @@
 #define YYSTYPE TreeNode *
 static char * savedName; /* for use in assignments */
 static int savedLineNo;  /* ditto */
+static int savedNumber;
 static TreeNode * savedTree; /* stores syntax tree for later return */
 static int yylex(void); /* added 11/2/11 to ensure no conflict with lex */
 
@@ -58,7 +59,7 @@ saveName    : ID
                  }
             ;
 saveNumber  : NUM
-                 { savedNumber = atoi(tokenString);
+                 { savedNumber = atol(tokenString);
                    savedLineNo = lineno;
                  }
             ;
@@ -69,7 +70,7 @@ var_decl    : type_spec saveName SEMI
                    $$->attr.name = savedName;
                  }
             | type_spec saveName LBRACKET saveNumber RBRACKET SEMI
-                 { $$ = newDeclNode(ArrVarK);
+                 { $$ = newDeclNode(VarK);
                    $$->child[0] = $1; /* type */
                    $$->lineno = lineno;
                    $$->attr.arr.name = savedName;
@@ -86,7 +87,7 @@ type_spec   : INT
                  }
             ;
 fun_decl    : type_spec saveName {
-                   $$ = newDeclNode(FuncK);
+                   $$ = newDeclNode(FunK);
                    $$->lineno = lineno;
                    $$->attr.name = savedName;
                  }
@@ -114,11 +115,6 @@ param_list  : param_list COMMA param
                  }
             | param { $$ = $1; };
 param       : type_spec saveName
-                 { $$ = newParamNode(NonArrParamK);
-                   $$->child[0] = $1;
-                   $$->attr.name = savedName;
-                 }
-            | type_spec saveName
               LBPARENT RBPARENT
                  { $$ = newParamNode(ArrParamK);
                    $$->child[0] = $1;
@@ -163,13 +159,13 @@ exp_stmt    : exp SEMI { $$ = $1; }
             | SEMI { $$ = NULL; }
             ;
 sel_stmt    : IF LPARENT exp RPARENT stmt
-                 { $$ = newStmtNode(IfK);
+                 { $$ = newStmtNode(SelK);
                    $$->child[0] = $3;
                    $$->child[1] = $5;
                    $$->child[2] = NULL;
                  }
             | IF LPARENT exp RPARENT stmt ELSE stmt
-                 { $$ = newStmtNode(IfK);
+                 { $$ = newStmtNode(SelK);
                    $$->child[0] = $3;
                    $$->child[1] = $5;
                    $$->child[2] = $7;
@@ -191,7 +187,7 @@ ret_stmt    : RETURN SEMI
                  }
             ;
 exp         : var ASSIGN exp
-                 { $$ = newExpNode(AssignK);
+                 { $$ = newExpNode(OpK);
                    $$->child[0] = $1;
                    $$->child[1] = $3;
                  }
@@ -202,7 +198,7 @@ var         : saveName
                    $$->attr.name = savedName;
                  }
             | saveName
-                 { $$ = newExpNode(ArrIdK);
+                 { $$ = newExpNode(IdK);
                    $$->attr.name = savedName;
                  }
               LBRACKET exp RBRACKET

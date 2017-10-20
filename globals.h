@@ -45,7 +45,7 @@
 #endif
 
 /* MAXRESERVED = the number of reserved words */
-#define MAXRESERVED 6
+#define MAXRESERVED 6 /* changed to 6 */
 
 /* Yacc/Bison generates its own integer values
  * for tokens
@@ -67,7 +67,7 @@ extern int lineno; /* source line number for listing */
 //typedef enum {OpK,ConstK,IdK} ExpKind;
 
 /* ExpType is used for type checking */
-//typedef enum {Void,Integer,Boolean} ExpType;
+typedef enum {Boolean} ExpType;
 
 
 /*Cminus Typedef*/
@@ -76,9 +76,12 @@ typedef enum {Void,Integer,Array} TypeSpec;
 typedef enum {VarK,FunK,ParamK} DeclKind;
 typedef enum {CompK,SelK,IterK,RetK} StmtKind;
 typedef enum {OpK,ConstK,IdK,CallK} ExpKind;
-
+typedef enum {TypeNamek} TypeKind;
+typedef enum {ArrParamK, NonArrParamk} ParamKind;
 #define MAXCHILDREN 3
 
+
+/*
 typedef struct treeNode
    { struct treeNode * child[MAXCHILDREN];
      struct treeNode * sibling;
@@ -88,8 +91,38 @@ typedef struct treeNode
      union { TokenType op;
              int val;
              char * name; } attr;
-     ExpType type; /* for type checking of exps */
+     ExpType type; // for type checking of exps 
    } TreeNode;
+
+*/
+
+
+/* ArrayAttr is used for attributes for array variables */
+typedef struct arrayAttr {
+    TokenType type;
+    char * name;
+    int size;
+} ArrayAttr;
+
+
+typedef struct treeNode
+   { struct treeNode * child[MAXCHILDREN];
+     struct treeNode * sibling;
+     int lineno;
+     NodeKind nodekind;
+     union { StmtKind stmt;
+             ExpKind exp;
+             DeclKind decl;
+             ParamKind param;
+             TypeKind type; } kind;
+     union { TokenType op;
+             TokenType type;
+             int val;
+             char * name;
+	     ArrayAttr arr;
+             struct ScopeRec * scope; } attr;
+     ExpType type; /* for type checking of exps */
+} TreeNode;
 
 /**************************************************/
 /***********   Flags for tracing       ************/

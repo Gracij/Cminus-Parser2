@@ -162,9 +162,9 @@ void printTree( TreeNode * tree )
         case IterK:
           fprintf(listing,"Iterate\n");
           break;
-	case Retk:
-	  fprintf(listing,"Return\n");
-	  break;
+	//case Retk:
+	 // fprintf(listing,"Return\n");
+	  //break;
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
           break;
@@ -182,9 +182,9 @@ void printTree( TreeNode * tree )
         case IdK:
           fprintf(listing,"Id: %s\n",tree->attr.name);
           break;
-	case Callk:
-	  fprintf(listing,"Call(args): %s\n",tree->attr.name);
-          break;
+	//case Callk:
+	 // fprintf(listing,"Call(args): %s\n",tree->attr.name);
+          //break;
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
           break;

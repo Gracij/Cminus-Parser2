@@ -23,15 +23,9 @@ whitespace  [ \t]+
 %%
 
 "if"            {return IF;}
-"then"          {return THEN;}
 "int"           {return INT;}
 "return"        {return RETURN;}
 "else"          {return ELSE;}
-"end"           {return END;}
-"repeat"        {return REPEAT;}
-"until"         {return UNTIL;}
-"read"          {return READ;}
-"write"         {return WRITE;}
 ":="            {return ASSIGN;}
 "="             {return EQUAL;}
 "<"             {return SMALLER;}
@@ -44,8 +38,8 @@ whitespace  [ \t]+
 "/"             {return DIVIDE;}
 "("             {return LPARENT;}
 ")"             {return RPARENT;}
-"{"             {return LBPARENT}
-"}"             {return RBPARENT}
+"{"             {return LBPARENT;}
+"}"             {return RBPARENT;}
 "["             {return LBRACKET;}  
 "]"             {return RBRACKET;}
 ";"             {return SEMI;}

@@ -29,9 +29,14 @@ TreeNode * newExpNode(ExpKind);
 
 TreeNode * newDeclNode(DeclKind);
 
+
 /* 
 *
 */
+
+TreeNode * newTypeNode(TypeKind);
+
+TreeNode * newParamNode(ParamKind);
 
 char * copyString( char * );
 
