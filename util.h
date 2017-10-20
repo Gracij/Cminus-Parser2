@@ -34,7 +34,7 @@ TreeNode * newDeclNode(DeclKind);
 *
 */
 
-TreeNode * newTypeNode(TypeKind);
+TreeNode * newTypeNode(TypeSpec);
 
 TreeNode * newParamNode(ParamKind);
 
