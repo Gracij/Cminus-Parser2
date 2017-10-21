@@ -114,7 +114,6 @@ TreeNode * newDeclNode(DeclKind kind)
     t->nodekind = DeclK;
     t->kind.decl = kind;
     t->lineno = lineno;
-    t->type = Void;
   }
   return t;
 }
@@ -164,7 +163,7 @@ void printTree( TreeNode * tree )
           fprintf(listing,"Compound\n");
           break;
         case SelK:
-          fprintf(listing,"Subsequence\n");
+          fprintf(listing,"If\n");
           break;
         case IterK:
           fprintf(listing,"While\n");
