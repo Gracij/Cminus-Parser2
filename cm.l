@@ -1,8 +1,11 @@
 /****************************************************/
-/* File: tiny.l                                     */
+/* File: cm.l                                       */
 /* Lex specification for TINY                       */
 /* Compiler Construction: Principles and Practice   */
 /* Kenneth C. Louden                                */
+/* Modified for C-                                  */
+/* CSC 425: Compilers and Interpreters              */
+/* James Graci, Logan Stecker                       */
 /****************************************************/
 
 %{
