@@ -169,7 +169,7 @@ void printTree( TreeNode * tree )
         case IterK:
           fprintf(listing,"While\n");
           break;
-        case Retk:
+        case RetK:
           fprintf(listing,"Return\n");
           break;
         default:
@@ -189,7 +189,7 @@ void printTree( TreeNode * tree )
         case IdK:
           fprintf(listing,"ID: %s\n",tree->attr.name);
           break;
-        case Callk:
+        case CallK:
           fprintf(listing,"Call: %s\n",tree->attr.name);
           break;
         default:
