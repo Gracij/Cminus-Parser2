@@ -204,6 +204,7 @@ var         : saveName
                  { $$ = newExpNode(IdK);
                    $$->attr.name = savedName;
 		   $$->child[0] = $1;
+		   $$->child[1] = $3;
 		   $$->type = Array;
 		 }
             ;
