@@ -200,13 +200,13 @@ void printTree( TreeNode * tree )
     else if (tree->nodekind==DeclK)
     { switch (tree->kind.decl) {
         case VarK:
-          fprintf(listing,"Variable Decl: %s (%d)\n",tree->attr.name,tree->type);
+          fprintf(listing,"Variable Decl: %s (%s)\n",tree->attr.name,tree->child[0]);
       	  break;
         case FunK:
-          fprintf(listing,"Function Decl: %s (%d)\n",tree->attr.name,tree->type);
+          fprintf(listing,"Function Decl: %s (%s)\n",tree->attr.name,tree->child[0]);
           break;
         case ParamK:
-          fprintf(listing,"Param: %s (%d)\n",tree->attr.name,tree->type);
+          fprintf(listing,"Param: %s (%s)\n",tree->attr.name,tree->child[0]);
           break;
       }
     }
