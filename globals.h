@@ -5,6 +5,9 @@
 /* must come before other include files             */
 /* Compiler Construction: Principles and Practice   */
 /* Kenneth C. Louden                                */
+/* Modified for C-                                  */
+/* CSC 425: Compilers and Interpreters              */
+/* James Graci, Logan Stecker                       */
 /****************************************************/
 
 #ifndef _GLOBALS_H_
@@ -27,7 +30,7 @@
 #ifndef YYPARSER
 
 /* the name of the following file may change */
-#include "tiny.tab.h"
+#include "cm.tab.h"
 
 /* ENDFILE is implicitly defined by Yacc/Bison,
  * and not included in the tab.h file
