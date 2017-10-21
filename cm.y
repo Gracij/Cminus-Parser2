@@ -1,8 +1,11 @@
 /****************************************************/
-/* File: tiny.y                                     */
+/* File: cm.y                                       */
 /* The TINY Yacc/Bison specification file           */
 /* Compiler Construction: Principles and Practice   */
 /* Kenneth C. Louden                                */
+/* Modified for C-                                  */
+/* CSC 425: Compilers and Interpreters              */
+/* James Graci, Logan Stecker                       */
 /****************************************************/
 %{
 #define YYPARSER /* distinguishes Yacc output from other code files */
@@ -34,7 +37,7 @@ int yyerror(char * message); /* prototype to make gcc happy */
      
 %token ERROR 
 
-%% /* Grammar for TINY */
+%% /* Grammar for C- */
 program     : decl_list
                  { savedTree = $1;}
             ;
