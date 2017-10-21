@@ -2,43 +2,44 @@
 # Makefile for TINY
 # Gnu C Version
 # K. Louden 2/3/98
+# Modified for C-
 
 CC = gcc
 
 CFLAGS = 
 
-OBJS = main.o util.o lex.yy.o tiny.tab.o  
+OBJS = main.o util.o lex.yy.o cm.tab.o  
 
-tinyc: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o tinyc -lfl
+cmc: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o cmc -lfl
 
-main.o: main.c globals.h util.h scan.h parse.h tiny.tab.h 
+main.o: main.c globals.h util.h scan.h parse.h cm.tab.h 
 	$(CC) $(CFLAGS) -c main.c
 
-util.o: util.c util.h globals.h tiny.tab.h
+util.o: util.c util.h globals.h cm.tab.h
 	$(CC) $(CFLAGS) -c util.c
 
-lex.yy.o: tiny.tab.h lex.yy.c scan.h util.h globals.h
+lex.yy.o: cm.tab.h lex.yy.c scan.h util.h globals.h
 	$(CC) $(CFLAGS) -c lex.yy.c
 
-tiny.tab.o: tiny.tab.h
-	$(CC) $(CFLAGS) -c tiny.tab.c
+cm.tab.o: cm.tab.h
+	$(CC) $(CFLAGS) -c cm.tab.c
 
-tiny.tab.h: tiny.y
-	bison -dv tiny.y
+cm.tab.h: cm.y
+	bison -dv cm.y
 
-lex.yy.c: tiny.l
-	flex tiny.l
+lex.yy.c: cm.l
+	flex cm.l
 
 tags: *.c Makefile
 	ctags -R
 
 clean:
-	-rm tinyc
+	-rm cmc
 	-rm $(OBJS)
-	-rm tiny.tab.*
+	-rm cm.tab.*
 	-rm lex.yy.c
-	-rm tiny.output
+	-rm cm.output
 
-all: tinyc
+all: cmc
 
