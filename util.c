@@ -194,16 +194,16 @@ void printTree( TreeNode * tree )
           break;
       }
     }
-    else if (tree->nodekind==DeclK) // if you look at the project spec all of these need to print out the TypeSpec after the name, should this be another attr in the node construction?
+    else if (tree->nodekind==DeclK)
     { switch (tree->kind.decl) {
         case VarK:
-          fprintf(listing,"Variable Decl: %s\n",tree->attr.name);
+          fprintf(listing,"Variable Decl: %s (%s)\n",tree->attr.name,tree->type);
       	  break;
         case FunK:
-          fprintf(listing,"Function Decl: %s\n",tree->attr.name);
+          fprintf(listing,"Function Decl: %s (%s)\n",tree->attr.name,tree->type);
           break;
         case ParamK:
-          fprintf(listing,"Param: %s\n",tree->attr.name);
+          fprintf(listing,"Param: %s (%s)\n",tree->attr.name,tree->type);
           break;
       }
     }
