@@ -199,12 +199,10 @@ var         : saveName
                  { $$ = newExpNode(IdK);
                    $$->attr.name = savedName;
                  }
-            | saveName
+            | saveName LBPARENT exp RBPARENT
                  { $$ = newExpNode(IdK);
                    $$->attr.name = savedName;
-                 }
-		 LBPARENT exp RBPARENT
-		 { $$->child[0] = $3;
+		   $$->child[0] = $3;
 		   $$->type = Array;
 		 }
             ;
