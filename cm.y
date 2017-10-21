@@ -115,6 +115,7 @@ param       : type_spec saveName
                  { $$ = newDeclNode(ParamK);
 		   $$->child[0] = $1;
 		   $$->attr.name = savedName;
+		 }
             | type_spec saveName LBPARENT RBPARENT
                  { $$ = newDeclNode(ParamK);
                    $$->child[0] = $1;
