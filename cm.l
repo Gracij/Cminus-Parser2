@@ -25,120 +25,58 @@ whitespace  [ \t]+
 
 %%
 
-  "if" {
-    return IF;
-  }
-  "else" {
-    return ELSE;
-  }
-  "int" {
-    return INT;
-  }
-  "return" {
-    return RETURN;
-  }
-  "void" {
-    return VOID;
-  }
-  "while" {
-    return WHILE;
-  }
-  "+" {
-    return PLUS;
-  }
-  "-" {
-    return MINUS;
-  }
-  "*" {
-    return MULT;
-  }
-  "/" {
-    return DIVIDE;
-  }
-  "<" {
-    return SMALLER;
-  }
-  "<=" {
-    return ESMALLER;
-  }
-  ">" {
-    return LARGER;
-  }
-  ">=" {
-    return ELARGER;
-  }
-  "==" {
-    return EQUAL;
-  }
-  "!=" {
-    return NOTEQUAL;
-  }
-  "=" {
-    return ASSIGN;
-  }
-  ";" {
-    return SEMI;
-  }
-  "," {
-    return COMMA;
-  }
-  "(" {
-    return LPARENT;
-  }
-  ")" {
-    return RPARENT;
-  }
-  "[" {
-    return LBPARENT;
-  }
-  "]" {
-    return RBPARENT;
-  }
-  "{" {
-    return LBRACKET;
-  }
-  "}" {
-    return RBRACKET;
-  }
-  {number} {
-    return NUM;
-  }
-  {identifier} {
-    return ID;
-  }
-  {newline} {
-    lineno++;
-  }
-  {whitespace} { 
-    /* skip whitespace */
-  }
-  "/*" {
-    char c;
-    char d;
-    do {
-      c = input();
-      if (c == EOF) break;
-      if (c == '\n') lineno++;
-      if (c == '*') /* to close the comment, '/' must follow '*' */ {
-        d = input();
-        if (d == '/') break;
-      }
-    } while (c);
-  }
-  "//" {
-    char s; /* skip input until next line */
-    do {
-      s = input();
-      if (s == EOF) break;
-      if (s == '\n') /* must increment line as well as close comment */ {
-        lineno++;
-        break;
-      }
-    } while (s);
-  }
-  . {
-    return ERROR;
-  }%%
+"if" {return IF;}
+"else" {return ELSE;}
+"int" {return INT;}
+"return" {return RETURN;}
+"void" {return VOID;}
+"while" {return WHILE;}
+"+" {return PLUS;}
+"-" {return MINUS;}
+"*" {return MULT;}
+"/" {return DIVIDE;}
+"<" {return SMALLER;}
+"<=" {return ESMALLER;}
+">" {return LARGER;}
+">=" {return ELARGER;}
+"==" {return EQUAL;}
+"!=" {return NOTEQUAL;}
+"=" {return ASSIGN;}
+";" {return SEMI;}
+"," {return COMMA;}
+"(" {return LPARENT;}
+")" {return RPARENT;}
+"[" {return LBPARENT;}
+"]" {return RBPARENT;}
+"{" {return LBRACKET;}
+"}" {return RBRACKET;}
+{number} {return NUM;}
+{identifier} {return ID;}
+{newline} {lineno++;}
+{whitespace} { /* skip whitespace */ }
+"/*" { char c;
+       char d;
+       do {
+        c = input();
+        if (c == EOF) break;
+        if (c == '\n') lineno++;
+        if (c == '*') /* to close the comment, '/' must follow '*' */ {
+          d = input();
+          if (d == '/') break;
+        }
+       } while (c);
+     }
+  "//" { char s; /* skip input until next line */
+         do {
+           s = input();
+           if (s == EOF) break;
+           if (s == '\n') /* must increment line as well as close comment */ {
+             lineno++;
+             break;
+           }
+         } while (s);
+       }
+. { return ERROR; }
 
 %%
 
