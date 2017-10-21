@@ -69,10 +69,11 @@ var_decl    : type_spec saveName SEMI
                    $$->lineno = lineno;
                    $$->attr.name = savedName;
                  }
-            | type_spec saveName LBRACKET saveNumber RBRACKET SEMI // does this refer to array?
+            | type_spec saveName LBPARENT saveNumber RBPARENT SEMI
                  { $$ = newDeclNode(VarK);
                    $$->child[0] = $1; /* type */
                    $$->lineno = lineno;
+		   $$->type = Array;
                    $$->attr.name = savedName;
                  }
             ;
@@ -99,35 +100,29 @@ param_decl  : param_decl COMMA param
 		     else $$ = $3;
 		 }
               | param { $$ = $1; };
-type_spec   : INT
-                 { 
-                   $$->attr.type = INT;
-                 }
-            | VOID
-                 { 
-                   $$->attr.type = VOID;
-                 }
-	    | INT saveName LBRACKET saveNumber RBRACKET
-	         { 
-		   $$->attr.type = ARRAY;
-		 }
+type_spec   : INT   {}
+            | VOID  {}
             ;
 params      : param_decl  { $$ = $1; }
             | VOID
-                 { $$ = newTypeNode(Array);
-                   $$->attr.type = VOID;
+                 { $$ = newDeclNode(ParamK);
+                   $$->type = Void;
                  }
 param       : type_spec saveName
-              LBPARENT RBPARENT
+                 { $$ = newDeclNode(ParamK);
+		   $$->child[0] = $1;
+		   $$->attr.name = savedName;
+            | type_spec saveName LBPARENT RBPARENT
                  { $$ = newDeclNode(ParamK);
                    $$->child[0] = $1;
+		   $$->type = Array;
                    $$->attr.name = savedName;
                  }
             ;
-comp_stmt   : LBPARENT local_decls stmt_list RBRACKET
+comp_stmt   : LBRACKET local_decls stmt_list RBRACKET
                  { $$ = newStmtNode(CompK);
-                   $$->child[0] = $2; /* local variable declarations */
-                   $$->child[1] = $3; /* statements */
+                   $$->child[0] = $2;
+                   $$->child[1] = $3;
                  }
             ;
 local_decls : local_decls var_decl
@@ -204,9 +199,10 @@ var         : saveName
                  { $$ = newExpNode(IdK);
                    $$->attr.name = savedName;
                  }
-              LBRACKET exp RBRACKET
-                 { $$->child[0] = $3;
-                 }
+		 LBPARENT exp RBPARENT
+		 { $$->child[0] = $3;
+		   $$->type = Array;
+		 }
             ;
 simple_exp  : add_exp ESMALLER add_exp
                  { $$ = newExpNode(OpK);
