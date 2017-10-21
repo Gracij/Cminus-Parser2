@@ -87,9 +87,9 @@ typedef struct treeNode
      struct treeNode * sibling;
      int lineno;
      NodeKind nodekind;
-     union { StmtKind stmt;
-             ExpKind exp;
-             DeclKind decl; } kind;
+     union { DeclKind decl;
+	     StmtKind stmt;
+             ExpKind exp; } kind;
      union { TokenType op;
 	     int val;
 	     int size;
