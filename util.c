@@ -111,7 +111,6 @@ TreeNode * newDeclNode(DeclKind kind)
     t->nodekind = DeclK;
     t->kind.decl = kind;
     t->lineno = lineno;
-    /* we may need to initialize type here */
   }
   return t;
 }
