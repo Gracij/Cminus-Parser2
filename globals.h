@@ -61,15 +61,15 @@ extern int lineno; /* source line number for listing */
 /**************************************************/
 /***********   Syntax tree for parsing ************/
 /**************************************************/
-/*TINY language typedef*/
-//typedef enum {StmtK,ExpK} NodeKind;
-//typedef enum {IfK,RepeatK,AssignK,ReadK,WriteK} StmtKind;
-//typedef enum {OpK,ConstK,IdK} ExpKind;
+/* TINY language typedef
+ * typedef enum {StmtK,ExpK} NodeKind;
+ * typedef enum {IfK,RepeatK,AssignK,ReadK,WriteK} StmtKind;
+ * typedef enum {OpK,ConstK,IdK} ExpKind;
+ */
 
-/* ExpType is used for type checking */
-// typedef enum {Boolean} ExpType; <- is this equivalent to TypeSpec for C- data types? check Tiny usage
-
-/*Cminus Typedef*/
+/* Cminus Typedef
+ * TypeSpec is used for type checking
+ */
 typedef enum {StmtK,DeclK,ExpK} NodeKind;
 typedef enum {Void,Integer,Array} TypeSpec;
 
@@ -78,21 +78,6 @@ typedef enum {CompK,SelK,IterK,RetK} StmtKind;
 typedef enum {OpK,ConstK,IdK,CallK} ExpKind;
 
 #define MAXCHILDREN 3
-
-/*
-typedef struct treeNode
-   { struct treeNode * child[MAXCHILDREN];
-     struct treeNode * sibling;
-     int lineno;
-     NodeKind nodekind;
-     union { StmtKind stmt; ExpKind exp; DeclKind decl;} kind;
-     union { TokenType op;
-             int val;
-             char * name; } attr;
-     ExpType type; // for type checking of exps 
-   } TreeNode;
-
-*/
 
 typedef struct treeNode
    { struct treeNode * child[MAXCHILDREN];
@@ -103,11 +88,9 @@ typedef struct treeNode
              ExpKind exp;
              DeclKind decl; } kind;
      union { TokenType op;
-             TokenType type;
 	     int val;
-             char * name;
-	     /* TypeSpec spec; /* make this an attribute of the node and let grammar handle arrays */ } attr;
-     ExpType type; /* for type checking of exps */
+             char * name; } attr;
+     TypeSpec type; /* for type checking of exps */
 } TreeNode;
 
 /**************************************************/
