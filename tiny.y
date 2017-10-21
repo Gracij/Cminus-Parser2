@@ -24,13 +24,13 @@ int yyerror(char * message); /* prototype to make gcc happy */
 %}
 
 /*Reserved words*/
-%token IF ELSE INT RETURN VOID WHILE
+%token ELSE IF INT RETURN VOID WHILE
 
 /*Multichar Tokens*/
 %token ID NUM 
 
 /*Special Symbols as defined by Appendix A*/
-%token PLUS MINUS DIVIDE MULT SMALLER ESMALLER LARGER ELARGER EQUAL NOTEQUAL ASSIGN SEMI COMMA LPARENT RPARENT LBRACKET RBRACKET LBPARENT RBPARENT LCURL RCURL LNOTE RNOTE
+%token PLUS MINUS DIVIDE MULT SMALLER ESMALLER LARGER ELARGER EQUAL NOTEQUAL ASSIGN SEMI COMMA LPARENT RPARENT LBRACKET RBRACKET LBPARENT RBPARENT
      
 %token ERROR 
 
@@ -49,9 +49,9 @@ decl_list   : decl_list decl
                  }
             | decl  { $$ = $1; }
             ;
-decl        : var_decl  { $$ = $1; }
-            | fun_decl  { $$ = $1; }
-	    | // need to handle param_decl, possibly same as above
+decl        : var_decl    { $$ = $1; }
+            | fun_decl    { $$ = $1; }
+	    | param_decl  { $$ = $1; }
             ;
 saveName    : ID
                  { savedName = copyString(tokenString);
@@ -76,16 +76,6 @@ var_decl    : type_spec saveName SEMI
                    $$->attr.name = savedName;
                  }
             ;
-type_spec   : INT
-                 { $$ = newTypeNode(Integer);
-                   $$->attr.type = INT;
-                 }
-            | VOID
-                 { $$ = newTypeNode(Void);
-                   $$->attr.type = VOID;
-                 }
-	    // | INT LBRACKET params RBRACKET (maybe)
-            ;
 fun_decl    : type_spec saveName {
                    $$ = newDeclNode(FunK);
                    $$->lineno = lineno;
@@ -99,29 +89,41 @@ fun_decl    : type_spec saveName {
                    $$->child[2] = $7; /* body */
                  }
             ;
-params      : param_list  { $$ = $1; }
+param_decl  : param_decl COMMA param
+                 { YYSTYPE t = $1;
+		   if (t != NULL)
+		   { while (t->sibling != NULL)
+		        t = t->sibling;
+                     t->sibling = $3;
+		     $$ = $1; }
+		     else $$ = $3;
+		 }
+              | param { $$ = $1; };
+type_spec   : INT
+                 { 
+                   $$->attr.type = INT;
+                 }
+            | VOID
+                 { 
+                   $$->attr.type = VOID;
+                 }
+	    | INT saveName LBRACKET saveNumber RBRACKET
+	         { 
+		   $$->attr.type = ARRAY;
+		 }
+            ;
+params      : param_decl  { $$ = $1; }
             | VOID
                  { $$ = newTypeNode(Array);
                    $$->attr.type = VOID;
                  }
-param_list  : param_list COMMA param
-                 { YYSTYPE t = $1;
-                   if (t != NULL)
-                   { while (t->sibling != NULL)
-                        t = t->sibling;
-                     t->sibling = $3;
-                     $$ = $1; }
-                     else $$ = $3; 
-                 }
-            | param { $$ = $1; };
 param       : type_spec saveName
               LBPARENT RBPARENT
-                 { $$ = newParamNode(ArrParamK);
+                 { $$ = newDeclNode(ParamK);
                    $$->child[0] = $1;
                    $$->attr.name = savedName;
                  }
             ;
-
 comp_stmt   : LBPARENT local_decls stmt_list RBRACKET
                  { $$ = newStmtNode(CompK);
                    $$->child[0] = $2; /* local variable declarations */
