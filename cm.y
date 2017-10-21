@@ -203,7 +203,7 @@ var         : saveName
             | saveName LBPARENT exp RBPARENT
                  { $$ = newExpNode(IdK);
                    $$->attr.name = savedName;
-		   $$->child[0] = $3;
+		   $$->child[0] = $1;
 		   $$->type = Array;
 		 }
             ;
