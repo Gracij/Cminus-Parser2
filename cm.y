@@ -192,6 +192,7 @@ exp         : var ASSIGN exp
                  { $$ = newExpNode(OpK);
                    $$->child[0] = $1;
                    $$->child[1] = $3;
+		   $$->attr.op = ASSIGN;
                  }
             | simple_exp { $$ = $1; }
             ;
