@@ -4,6 +4,9 @@
 /* for the TINY compiler                            */
 /* Compiler Construction: Principles and Practice   */
 /* Kenneth C. Louden                                */
+/* Modified for C-                                  */
+/* CSC 425: Compilers and Interpreters              */
+/* James Graci, Logan Stecker                       */
 /****************************************************/
 
 #include "globals.h"
