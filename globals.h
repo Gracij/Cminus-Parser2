@@ -82,8 +82,6 @@ typedef enum {OpK,ConstK,IdK,CallK} ExpKind;
 
 #define MAXCHILDREN 3
 
-struct ScopeRec;
-
 typedef struct treeNode
    { struct treeNode * child[MAXCHILDREN];
      struct treeNode * sibling;
@@ -95,8 +93,7 @@ typedef struct treeNode
      union { TokenType op;
 	     int val;
 	     int size;
-             char * name;
-	     struct ScopeRec * scope; } attr;
+             char * name; } attr;
      TypeSpec type; /* for type checking of exps */
 } TreeNode;
 
