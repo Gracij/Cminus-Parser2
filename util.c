@@ -15,11 +15,11 @@
 void printToken( TokenType token, const char* tokenString )
 { switch (token)
   { 	case ELSE:
-	case IF:
-	case INT:
-	case RETURN:
-	case VOID:
-   	case WHILE:
+	    case IF:
+	    case INT:
+	    case RETURN:
+	    case VOID:
+   	  case WHILE:
       fprintf(listing,
          "reserved word: %s\n",tokenString);
       break;
@@ -97,6 +97,9 @@ TreeNode * newExpNode(ExpKind kind)
   return t;
 }
 
+/* Function newDeclNode creates a new declaration
+ * node for syntax construction
+ */
 TreeNode * newDeclNode(DeclKind kind)
 { TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
   int i;
@@ -108,27 +111,10 @@ TreeNode * newDeclNode(DeclKind kind)
     t->nodekind = DeclK;
     t->kind.decl = kind;
     t->lineno = lineno;
+    /* we may need to initialize type here */
   }
   return t;
 }
-
-/* <- this is not actually a "node kind" and so does not need a constructor
-TreeNode * newTypeNode(TypeSpec kind)
-{ TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
-  int i;
-  if (t==NULL)
-    fprintf(listing,"Out of memory error at line %d\n",lineno);
-  else {
-    for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
-    t->sibling = NULL;
-    t->nodekind = ExpK;
-    t->kind.exp = kind;
-    t->lineno = lineno;
-  }
-  return t;
-}
- */
-
 
 /* Function copyString allocates and makes a new
  * copy of an existing string
@@ -174,15 +160,15 @@ void printTree( TreeNode * tree )
         case CompK:
           fprintf(listing,"Compound\n");
           break;
-	case SelK:
-	  fprintf(listing,"Subsequence\n");
-	  break;
+	      case SelK:
+	        fprintf(listing,"Subsequence\n");
+	        break;
         case IterK:
           fprintf(listing,"While\n");
           break;
-	case Retk:
-	  fprintf(listing,"Return\n");
-	  break;
+	      case Retk:
+	        fprintf(listing,"Return\n");
+	        break;
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
           break;
@@ -200,8 +186,8 @@ void printTree( TreeNode * tree )
         case IdK:
           fprintf(listing,"ID: %s\n",tree->attr.name);
           break;
-	case Callk:
-	  fprintf(listing,"Call: %s\n",tree->attr.name);
+	      case Callk:
+	        fprintf(listing,"Call: %s\n",tree->attr.name);
           break;
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
@@ -210,14 +196,14 @@ void printTree( TreeNode * tree )
     }
     else if (tree->nodekind==DeclK) // if you look at the project spec all of these need to print out the TypeSpec after the name, should this be another attr in the node construction?
     { switch (tree->kind.decl) {
-	case VarK:
-	  fprintf(listing,"Variable Decl: %s\n",tree->attr.name);
+	      case VarK:
+	        fprintf(listing,"Variable Decl: %s\n",tree->attr.name);
       	  break;
-	case FunK:
-	  fprintf(listing,"Function Decl: %s\n",tree->attr.name);
-     	  break;
-	case ParamK:
-	  fprintf(listing,"Param: %s\n",tree->attr.name);
+	      case FunK:
+	        fprintf(listing,"Function Decl: %s\n",tree->attr.name);
+     	    break;
+	      case ParamK:
+	        fprintf(listing,"Param: %s\n",tree->attr.name);
           break;
       }
     }
