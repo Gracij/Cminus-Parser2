@@ -89,6 +89,7 @@ typedef struct treeNode
              DeclKind decl; } kind;
      union { TokenType op;
 	     int val;
+	     int size;
              char * name; } attr;
      TypeSpec type; /* for type checking of exps */
 } TreeNode;
